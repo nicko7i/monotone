@@ -1,0 +1,33 @@
+{
+  "name": "monotone",
+  "version": "1.0.0",
+  "description": "Generates monotonically increasing build numbers.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/nicko7i/monotone.git"
+  },
+  "author": "Nick Okasinski",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://gitlab.com/nicko7i/monotone/issues"
+  },
+  "homepage": "https://gitlab.com/nicko7i/monotone#README",
+  "dependencies": {
+    "debug": "^3.1.0",
+    "knex": "^0.15.2",
+    "koa": "^2.5.2",
+    "sqlite3": "^4.0.2",
+    "supports-color": "^5.5.0"
+  },
+  "devDependencies": {
+    "axios": "^0.18.0",
+    "eslint": "^5.5.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "jest": "^23.5.0"
+  }
+}
