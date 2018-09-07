@@ -8,7 +8,7 @@ const knex = require('knex')({
 const tableName = 'builds';
 
 function createTable() {
-  knex.schema.hasTable(tableName)
+  return knex.schema.hasTable(tableName)
     .then((exists) => {
       if (!exists) {
         return knex.schema.createTable(tableName, (t) => {
@@ -17,6 +17,7 @@ function createTable() {
           t.text('date');
         });
       }
+      console.log('table already exists');
       return null;
     });
 }
@@ -51,8 +52,15 @@ function getRecent() {
     .select('seq');
 }
 
-function postHash(hash) {
-  return insertRow(hash);
+async function postHash(hash) {
+  let result;
+  try {
+    result = await insertRow(hash);
+  } catch (error) {
+    if (error.code === 'SQLITE_CONSTRAINT') return null;
+    throw error;
+  }
+  return result;
 }
 
 module.exports = {
@@ -61,7 +69,7 @@ module.exports = {
   getRecent,
   latestBuildNumber,
   postHash,
-  _insertRow: insertRow, // for testing
-  _knex: knex, // for testing
+  _insertRow: insertRow, // '_*' denotes for testing
+  _knex: knex,
   _tableName: tableName,
 };
