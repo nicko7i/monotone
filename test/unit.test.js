@@ -1,15 +1,20 @@
 const db = require('../src/db');
+const { _onGet, _onPost, _router } = require('../src/router')
 
 const knex = db._knex;
 const table = db._tableName;
 
+beforeEach(async (done) => {
+  const exists = await knex.schema.hasTable(table);
+  if (exists) await knex.schema.dropTable(table);
+  await db.createTable();
+  done();
+});
+
 describe('knex stuff', () => {
-  beforeEach(async (done) => {
-    const exists = await knex.schema.hasTable(table);
-    if (exists) await knex.schema.dropTable(table);
-    await db.createTable();
-    done();
-  });
+  test('null', () => undefined);
+
+  test('null async', async (done) => done());
 
   test('create', async (done) => {
     await knex.schema.dropTable(table)
@@ -54,17 +59,40 @@ describe('knex stuff', () => {
   });
 
   test('postHash', async (done) => {
-    await db.postHash('adriatic');
+    const result = await db.postHash('adriatic');
     const count = await knex(table).count();
     expect(count[0]['count(*)']).toBe(1);
+    expect(result[0]).toBe(1);
     done();
   });
 
   test('postHash unique', async (done) => {
     await db.postHash('adriatic');
-    await db.postHash('adriatic');
+    const result = await db.postHash('adriatic');
     const count = await knex(table).count();
     expect(count[0]['count(*)']).toBe(1);
+    expect(result).toBe(1);
+    done();
+  });
+});
+
+describe('route handler stuff', () => {
+  test('onGet with query', async (done) => {
+    await db._insertRow('pelican');
+    const context = { request: { query: { hash: 'pelican' } } };
+    await _onGet(context);
+    expect(context.body.number).toBe(1);
+    expect(context.body.hash).toBe('pelican');
+    done();
+  });
+
+  test('onGet with no query', async (done) => {
+    await db._insertRow('stork');
+    await db._insertRow('sandpiper');
+    const context = { request: { query: { } } };
+    await _onGet(context);
+    expect(context.body.number).toBe(2);
+    expect(context.body.hash).toBe('sandpiper');
     done();
   });
 });

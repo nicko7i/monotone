@@ -17,7 +17,6 @@ function createTable() {
           t.text('date');
         });
       }
-      console.log('table already exists');
       return null;
     });
 }
@@ -57,7 +56,9 @@ async function postHash(hash) {
   try {
     result = await insertRow(hash);
   } catch (error) {
-    if (error.code === 'SQLITE_CONSTRAINT') return null;
+    if (error.code === 'SQLITE_CONSTRAINT') {
+      return latestBuildNumber();
+    }
     throw error;
   }
   return result;
