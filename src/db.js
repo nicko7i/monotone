@@ -13,7 +13,7 @@ function createTable() {
       if (!exists) {
         return knex.schema.createTable(tableName, (t) => {
           t.increments('number').primary();
-          t.string('hash', 40);
+          t.string('hash', 40).unique();
           t.text('date');
         });
       }
@@ -59,8 +59,9 @@ module.exports = {
   createTable,
   getByHash,
   getRecent,
-  insertRow, // for testing
-  knex, // for testing
   latestBuildNumber,
   postHash,
+  _insertRow: insertRow, // for testing
+  _knex: knex, // for testing
+  _tableName: tableName,
 };

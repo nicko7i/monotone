@@ -1,7 +1,13 @@
 {
+  "env": {
+    "jest": true,
+    "node": true
+  },
   "extends": "airbnb-base",
+  "plugins": ["jest"],
   "rules": {
     "func-names": ["error", "never"],
     "indent": ["error", 2],
+    "no-underscore-dangle": "off"
   }
 }
