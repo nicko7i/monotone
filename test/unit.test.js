@@ -54,7 +54,7 @@ describe('knex stuff', () => {
   test('getByHash', async (done) => {
     await db._insertRow('frog');
     const result = await db.getByHash('frog');
-    expect(result[0]).toHaveProperty('hash', 'frog');
+    expect(result).toHaveProperty('hash', 'frog');
     done();
   });
 
@@ -72,6 +72,16 @@ describe('knex stuff', () => {
     const count = await knex(table).count();
     expect(count[0]['count(*)']).toBe(1);
     expect(result).toBe(1);
+    done();
+  });
+
+  test('getRecent', async (done) => {
+    await db._insertRow('tristan');
+    await db._insertRow('isolde');
+    await db._insertRow('flagstad');
+    const result = await db._getRecent();
+    expect(result.number).toBe(3);
+    expect(result.hash).toBe('flagstad');
     done();
   });
 });

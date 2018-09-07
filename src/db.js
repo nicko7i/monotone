@@ -42,13 +42,22 @@ function getByHash(hash) {
     .where({
       hash,
     })
-    .select('*');
+    .select('*')
+    .then(result => result[0]);
+}
+
+function getByNumber(n) {
+  return knex(tableName)
+    .where({
+      number: n,
+    })
+    .select('*')
+    .then(result => result[0]);
 }
 
 function getRecent() {
-  return knex('sqlite_sequence')
-    .where()
-    .select('seq');
+  return latestBuildNumber()
+    .then(n => getByNumber(n));
 }
 
 async function postHash(hash) {
@@ -57,7 +66,8 @@ async function postHash(hash) {
     result = await insertRow(hash);
   } catch (error) {
     if (error.code === 'SQLITE_CONSTRAINT') {
-      return latestBuildNumber();
+      return getByHash(hash)
+        .then(x => x.number);
     }
     throw error;
   }
@@ -70,6 +80,7 @@ module.exports = {
   getRecent,
   latestBuildNumber,
   postHash,
+  _getRecent: getRecent,
   _insertRow: insertRow, // '_*' denotes for testing
   _knex: knex,
   _tableName: tableName,
