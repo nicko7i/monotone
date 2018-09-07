@@ -30,37 +30,37 @@ function insertRow(hash) {
 
 function latestBuildNumber() {
   return knex('sqlite_sequence')
-  .where({
-    name: 'builds',
-  })
-  .select('seq')
-  .then((result) => {
-    return result[0].seq;
-  });
-}
-
-function getByHash(context, hash) {
-  if (!hash) context.throw(400, 'no hash value');
-  context.body = `got by hash ${hash}`;
-}
-
-function getRecent(context) {
-  context.body = 'got recent';
-  knex('sqlite_sequence')
-    .where()
+    .where({
+      name: tableName,
+    })
     .select('seq')
+    .then(result => result[0].seq);
 }
 
-function postHash(context, hash) {
+function getByHash(hash) {
+  return knex(tableName)
+    .where({
+      hash,
+    })
+    .select('*');
+}
 
+function getRecent() {
+  return knex('sqlite_sequence')
+    .where()
+    .select('seq');
+}
+
+function postHash(hash) {
+  return insertRow(hash);
 }
 
 module.exports = {
   createTable,
   getByHash,
   getRecent,
-  insertRow,  // for testing
+  insertRow, // for testing
   knex, // for testing
   latestBuildNumber,
   postHash,
-}
+};
