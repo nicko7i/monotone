@@ -64,10 +64,6 @@ async function postHash(hash) {
   try {
     await insertRow(hash);
     return getByHash(hash)
-      .then((x) => {
-        console.log('postHash: ', x)
-        return x;
-      })
       .then(result => result.number);
   } catch (error) {
     if (error.code === 'SQLITE_CONSTRAINT') {

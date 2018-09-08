@@ -1,5 +1,5 @@
 const db = require('../src/db');
-const { _onGet, _onPost, _router } = require('../src/router')
+const { _onGet, _onPost, router } = require('../src/router');
 
 const knex = db._knex;
 const table = db._tableName;
@@ -60,7 +60,6 @@ describe('knex stuff', () => {
 
   test('postHash', async (done) => {
     const result = await db.postHash('adriatic');
-    console.log('test postHash: ', result)
     const count = await knex(table).count();
     expect(count[0]['count(*)']).toBe(1);
     expect(result).toBe(1);
@@ -123,9 +122,73 @@ describe('route handler stuff', () => {
     };
     const tryIt = async () => {
       await _onPost(context);
-      console.log('tryIt: ', context)
     };
     expect(tryIt()).rejects.toThrow('no hash value');
+    done();
+  });
+
+  test('router invalid method', async (done) => {
+    const context = {
+      method: 'PUT',
+      path: '/build',
+      request: { query: { } },
+      throw: (x, y) => {
+        throw new Error(`${x}: ${y}`);
+      },
+    };
+    const tryIt = async () => {
+      await router(context);
+    };
+    expect(tryIt()).rejects.toThrow('not allowed');
+    done();
+  });
+
+  test('router invalid path', async (done) => {
+    const context = {
+      path: '/modulation',
+      request: { query: { } },
+      throw: (x, y) => {
+        throw new Error(`${x}: ${y}`);
+      },
+    };
+    const tryIt = async () => {
+      await router(context);
+    };
+    expect(tryIt()).rejects.toThrow('not found');
+    done();
+  });
+
+  test('router get path', async (done) => {
+    await db._insertRow('Act I');
+    await db._insertRow('Act II');
+    await db._insertRow('Act III');
+    const context = {
+      method: 'GET',
+      path: '/build',
+      request: { query: { hash: 'Act III' } },
+      throw: (x, y) => {
+        throw new Error(`${x}: ${y}`);
+      },
+    };
+    await router(context);
+    expect(context.body.number).toBe(3);
+    expect(context.body.hash).toBe('Act III');
+    done();
+  });
+
+  test('router post path', async (done) => {
+    await db._insertRow('Act I');
+    await db._insertRow('Act II');
+    const context = {
+      method: 'POST',
+      path: '/build',
+      request: { query: { hash: 'Act III' } },
+      throw: (x, y) => {
+        throw new Error(`${x}: ${y}`);
+      },
+    };
+    await router(context);
+    expect(context.body).toBe(3);
     done();
   });
 });
