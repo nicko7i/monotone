@@ -84,6 +84,13 @@ describe('knex stuff', () => {
     expect(result.hash).toBe('flagstad');
     done();
   });
+
+  test('seedTable', async (done) => {
+    await db.seedTable();
+    const count = await db.latestBuildNumber();
+    expect(count).toBe(1);
+    done();
+  });
 });
 
 describe('route handler stuff', () => {

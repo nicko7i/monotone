@@ -37,6 +37,27 @@ function latestBuildNumber() {
     .then(result => result[0].seq);
 }
 
+async function seedTable() {
+  try {
+    await latestBuildNumber();
+  } catch (e) {
+    await insertRow('initial bootstrap row');
+  }
+  /*
+  try {
+    return knex('sqlite_sequence')
+      .where({
+        name: tableName,
+      })
+      .select('seq')
+      .then(result => result[0].seq);
+    // return latestBuildNumber();
+  } catch (error) {
+    return insertRow('initial bootstrap row');
+  }
+  */
+}
+
 function getByHash(hash) {
   return knex(tableName)
     .where({
@@ -80,6 +101,7 @@ module.exports = {
   getRecent,
   latestBuildNumber,
   postHash,
+  seedTable,
   _getRecent: getRecent,
   _insertRow: insertRow, // '_*' denotes for testing
   _knex: knex,
