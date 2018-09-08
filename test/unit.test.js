@@ -14,7 +14,7 @@ beforeEach(async (done) => {
 describe('knex stuff', () => {
   test('null', () => undefined);
 
-  test('null async', async (done) => done());
+  test('null async', async done => done());
 
   test('create', async (done) => {
     await knex.schema.dropTable(table)
@@ -60,9 +60,10 @@ describe('knex stuff', () => {
 
   test('postHash', async (done) => {
     const result = await db.postHash('adriatic');
+    console.log('test postHash: ', result)
     const count = await knex(table).count();
     expect(count[0]['count(*)']).toBe(1);
-    expect(result[0]).toBe(1);
+    expect(result).toBe(1);
     done();
   });
 
@@ -103,6 +104,13 @@ describe('route handler stuff', () => {
     await _onGet(context);
     expect(context.body.number).toBe(2);
     expect(context.body.hash).toBe('sandpiper');
+    done();
+  });
+
+  test('onPost with hash', async (done) => {
+    const context = { request: { query: { hash: 'glissando' } } };
+    await _onPost(context);
+    expect(context.body).toBe(1);
     done();
   });
 });

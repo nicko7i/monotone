@@ -61,9 +61,14 @@ function getRecent() {
 }
 
 async function postHash(hash) {
-  let result;
   try {
-    result = await insertRow(hash);
+    await insertRow(hash);
+    return getByHash(hash)
+      .then((x) => {
+        console.log('postHash: ', x)
+        return x;
+      })
+      .then(result => result.number);
   } catch (error) {
     if (error.code === 'SQLITE_CONSTRAINT') {
       return getByHash(hash)
@@ -71,7 +76,6 @@ async function postHash(hash) {
     }
     throw error;
   }
-  return result;
 }
 
 module.exports = {

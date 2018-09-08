@@ -2,16 +2,13 @@ const db = require('./db');
 
 function onGet(context) {
   const { hash } = context.request.query;
-  console.log('hash is: ', hash)
   if (hash) {
-    console.log('hash true')
     return db.getByHash(hash)
       .then((result) => {
         /* eslint-disable-next-line prefer-destructuring */
         context.body = result; /* eslint-disable-line no-param-reassign */
       });
   }
-  console.log('hash false')
   return db.getRecent()
     .then((result) => {
       /* eslint-disable-next-line prefer-destructuring */
