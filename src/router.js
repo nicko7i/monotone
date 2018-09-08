@@ -29,7 +29,7 @@ function onPost(context) {
 }
 
 async function router(context) {
-  if (context.path !== '/build') context.throw(404, 'not found');
+  if (context.path !== '/changeset') context.throw(404, 'not found');
   if (context.method === 'GET') {
     await onGet(context);
   } else if (context.method === 'POST') {

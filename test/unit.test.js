@@ -137,7 +137,7 @@ describe('route handler stuff', () => {
   test('router invalid method', async (done) => {
     const context = {
       method: 'PUT',
-      path: '/build',
+      path: '/changeset',
       request: { query: { } },
       throw: (x, y) => {
         throw new Error(`${x}: ${y}`);
@@ -171,7 +171,7 @@ describe('route handler stuff', () => {
     await db._insertRow('Act III');
     const context = {
       method: 'GET',
-      path: '/build',
+      path: '/changeset',
       request: { query: { hash: 'Act III' } },
       throw: (x, y) => {
         throw new Error(`${x}: ${y}`);
@@ -188,7 +188,7 @@ describe('route handler stuff', () => {
     await db._insertRow('Act II');
     const context = {
       method: 'POST',
-      path: '/build',
+      path: '/changeset',
       request: { query: { hash: 'Act III' } },
       throw: (x, y) => {
         throw new Error(`${x}: ${y}`);

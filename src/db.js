@@ -1,4 +1,5 @@
 const dbFile = process.env.MONOTONE_DB_FILE || '/tmp/monotone-db.sqlite';
+const srcRepo = process.env.MONOTONE_SRC_REPO || 'backer';
 const knex = require('knex')({
   client: 'sqlite3',
   connection: { filename: dbFile },
@@ -15,6 +16,7 @@ function createTable() {
           t.increments('number').primary();
           t.string('hash', 40).unique();
           t.text('date');
+          t.text('repo');
         });
       }
       return null;
@@ -24,6 +26,7 @@ function createTable() {
 function insertRow(hash) {
   return knex(tableName).insert({
     hash,
+    repo: srcRepo,
     date: knex.fn.now(),
   });
 }
@@ -43,19 +46,6 @@ async function seedTable() {
   } catch (e) {
     await insertRow('initial bootstrap row');
   }
-  /*
-  try {
-    return knex('sqlite_sequence')
-      .where({
-        name: tableName,
-      })
-      .select('seq')
-      .then(result => result[0].seq);
-    // return latestBuildNumber();
-  } catch (error) {
-    return insertRow('initial bootstrap row');
-  }
-  */
 }
 
 function getByHash(hash) {
