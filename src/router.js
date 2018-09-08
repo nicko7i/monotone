@@ -19,13 +19,14 @@ function onGet(context) {
 function onPost(context) {
   const { hash } = context.request.query;
   if (hash) {
+    console.log('hash true')
     return db.postHash(hash)
       .then((result) => {
         context.body = result; /* eslint-disable-line no-param-reassign */
       });
   }
   context.throw(400, 'no hash value provided');
-  return null;
+  return 42;
 }
 
 async function router(context) {

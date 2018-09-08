@@ -113,4 +113,19 @@ describe('route handler stuff', () => {
     expect(context.body).toBe(1);
     done();
   });
+
+  test('onPost without hash', async (done) => {
+    const context = {
+      request: { query: { } },
+      throw: (x, y) => {
+        throw new Error(`${x}: ${y}`);
+      },
+    };
+    const tryIt = async () => {
+      await _onPost(context);
+      console.log('tryIt: ', context)
+    };
+    expect(tryIt()).rejects.toThrow('no hash value');
+    done();
+  });
 });
