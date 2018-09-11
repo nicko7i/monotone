@@ -70,7 +70,7 @@ docker run -dit                               \
   nicko7i/monotone:1
 ```
 
-## Git integration
+## Git Integration
 
 Tagging the *git* commit makes the build number visible in GUI tools and ensures the
 association is retained even if the service database is lost.
@@ -79,3 +79,19 @@ build=$(curl -s -X POST http:my-server:8080/changeset/?hash=63b0a81cb26a31b08986
 git tag -a -m "build-${build}" "build-${build}" 63b0a81cb26a31b08986c69bd050ade2315f2216
 ```
 
+## Increasing the Build Number
+
+The build number can be made larger by editing the *sqlite* database file.
+```bash
+% sqlite3 /data/my-db.sqlite
+sqlite> select * from sqlite_sequence;
+builds|4
+sqlite> update sqlite_sequence set seq = 1500 where name = 'builds';
+sqlite> select * from sqlite_sequence;
+builds|1500
+sqlite>
+```
+
+Avoid making the build number smaller.  By design, the service does not overwrite existing
+records.  The build number can be made smaller only if first all the records which have larger
+build numbers are removed from the database.
