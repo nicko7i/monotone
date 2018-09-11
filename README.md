@@ -75,7 +75,7 @@ docker run -dit                               \
 Tagging the *git* commit makes the build number visible in GUI tools and ensures the
 association is retained even if the service database is lost.
 ```$bash
-build=$(curl -s -X POST http:my-server:8080/changeset/?hash=deadbeef)
+build=$(curl -s -X POST http:my-server:8080/changeset/?hash=63b0a81cb26a31b08986c69bd050ade2315f2216)
 git tag -a -m "build-${build}" "build-${build}" 63b0a81cb26a31b08986c69bd050ade2315f2216
 ```
 
